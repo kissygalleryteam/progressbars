@@ -30,6 +30,7 @@ Progressbars。
 |tpl|String|'{value}/{max}'|提示内容，可加入html，支持*'{value}'* / *'{max}'* / *'{percent}'*，为当前值、最大值和百分比匹配|
 |type|String|'value'|类型，*'value'* / *'percent'* / *'indeterminate'* / *'loading'*|
 |disabled|Boolean|false|禁用，值可以修改，但不能与用户交互，除非**disabled = false**|
+|animate|Boolean|true|animate=true，执行show()或hide()方法，会显示动画效果；animate=true, 且type='value'或type='percent'时，改变当前值，会显示动画效果|
 
 ### 方法
 
