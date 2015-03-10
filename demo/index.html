@@ -33,7 +33,7 @@
     <details>
         <summary>代码</summary>
             <pre>
-                var pb1 = new Progressbars({
+                var pb1 = new Progressbar({
                     $target: '#progressbar1',
                     value: 50
                 });
@@ -51,7 +51,7 @@
     <details>
         <summary>代码</summary>
             <pre>
-                var pb2 = new Progressbars({
+                var pb2 = new Progressbar({
                     $target: '#progressbar2',
                     type: 'percent',
                     value: 80
@@ -71,7 +71,7 @@
     <details>
         <summary>代码</summary>
             <pre>
-                var pb3 = new Progressbars({
+                var pb3 = new Progressbar({
                     $target: '#progressbar3',
                     type: 'indeterminate'
                 });
@@ -101,7 +101,7 @@
     <details>
         <summary>代码</summary>
             <pre>
-                var pb4 = new Progressbars({
+                var pb4 = new Progressbar({
                     $target: '#progressbar4',
                     type: 'loading'
                 });
@@ -126,7 +126,7 @@
     <details>
         <summary>代码</summary>
             <pre>
-                var pb5 = new Progressbars({
+                var pb5 = new Progressbar({
                     $target: '#progressbar5',
                     min: 100,
                     max: 500
@@ -148,7 +148,7 @@
     <details>
         <summary>代码</summary>
             <pre>
-                var pb6 = new Progressbars({
+                var pb6 = new Progressbar({
                     $target: '#progressbar6',
                     tpl: 'loading {percent}%'
                 });
@@ -173,7 +173,7 @@
     <details>
         <summary>代码</summary>
             <pre>
-                var pb7 = new Progressbars({
+                var pb7 = new Progressbar({
                     $target: '#progressbar7',
                     min: 0,
                     max: 200,
@@ -206,7 +206,7 @@
         S.config({
             packages:[
                 {
-                    name:"kg/progressbars/1.0.0",
+                    name:"kg/progressbars/1.0.1",
                     path:debugPath,
                     charset:"utf-8"
                 }
@@ -214,18 +214,18 @@
         });
     }
 
-    S.use('kg/progressbars/1.0.0/index', function (S, Progressbars) {
+    S.use('kg/progressbars/1.0.1/index', function (S, Progressbar) {
         var $ = S.all;
-        var pb1 = new Progressbars({
+        var pb1 = new Progressbar({
             $target: '#progressbar1',
             value: 50
         });
-        var pb2 = new Progressbars({
+        var pb2 = new Progressbar({
             $target: '#progressbar2',
             type: 'percent',
             value: 80
         });
-        var pb3 = new Progressbars({
+        var pb3 = new Progressbar({
             $target: '#progressbar3',
             type: 'indeterminate'
         });
@@ -239,7 +239,7 @@
                 pb3.setter('disabled', false);
             }
         });
-        var pb4 = new Progressbars({
+        var pb4 = new Progressbar({
             $target: '#progressbar4',
             type: 'loading'
         });
@@ -249,7 +249,7 @@
         $('#J_rotateplane').on('click', function (e) {
             $('#J_css_loading').attr('href', 'rotateplane.css');
         });
-        var pb5 = new Progressbars({
+        var pb5 = new Progressbar({
             $target: '#progressbar5',
             min: 100,
             max: 500
@@ -257,16 +257,18 @@
         $('#J_value').on('click', function (e) {
             pb5.setter('value', 345);
         });
-        var pb6 = new Progressbars({
+        var pb6 = new Progressbar({
             $target: '#progressbar6',
             tpl: 'loading {percent}%'
         });
-        var i = 0;
-        var interval = window.setInterval(function () {
-            if (i >= 100) window.clearInterval(interval);
-            pb6.setter('value', i++);
-        }, 100);
-        var pb7 = new Progressbars({
+        (function (pb) {
+            var i = 0;
+            var interval = window.setInterval(function () {
+                if (i >= 100) window.clearInterval(interval);
+                pb.setter('value', i++);
+            }, 200);
+        })(pb6);
+        var pb7 = new Progressbar({
             $target: '#progressbar7',
             min: 0,
             max: 200,
@@ -283,12 +285,14 @@
                 console.log('destroy');
             }
         });
-        pb7.tpl = '{value}/{max} = {percent}%'; //使用defineSetter方法定义tpl属性
-        var i2 = 0;
-        var interval2 = window.setInterval(function () {
-            if (i2 >= 200) window.clearInterval(interval2);
-            pb7.setter('value', i2++);
-        }, 50);
+        (function (pb) {
+            pb.tpl = '{value}/{max} = {percent}%'; //使用defineSetter方法定义tpl属性
+            var i = 0;
+            var interval = window.setInterval(function () {
+                if (i >= 200) window.clearInterval(interval);
+                pb.setter('value', i++);
+            }, 50);
+        })(pb7);
         $('#J_btn_display').on('click', function () {
             var $self = $(this);
             if ($self.html() === '隐藏组件') {
