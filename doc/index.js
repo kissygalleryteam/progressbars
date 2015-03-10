@@ -2,8 +2,8 @@
  * @ignore  =====================================================================================
  * @fileoverview vc-progressbars组件
  * @author  yangren.ry@taobao.com
- * @version 1.0.0
- * @ignore  created in 2015-03-09
+ * @version 1.0.1
+ * @ignore  created in 2015-03-10
  * @ignore  =====================================================================================
  */
 var $ = require('node').all;

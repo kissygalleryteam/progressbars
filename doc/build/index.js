@@ -1,5 +1,13 @@
-KISSY.add('kg/progressbars/1.0.0/index',["node","base"],function(S ,require, exports, module) {
- var $ = require('node').all;
+KISSY.add('kg/progressbars/1.0.1/index',["node","base"],function(S ,require, exports, module) {
+ /**
+ * @ignore  =====================================================================================
+ * @fileoverview vc-progressbars组件
+ * @author  yangren.ry@taobao.com
+ * @version 1.0.1
+ * @ignore  created in 2015-03-10
+ * @ignore  =====================================================================================
+ */
+var $ = require('node').all;
 var Base = require('base');
 
 var Util = {
@@ -34,7 +42,7 @@ var Progressbars = Base.extend({
         var value = self.value_ = self.get('value');
         if (value < min) value = min;
         if (value > max) value = max;
-        var percent = self.percent_ = parseInt(value / (max - min) * 100);
+        var percent = self.percent_ = parseInt((value - min) / (max - min) * 100);
         var type = self.type_ = self.get('type');
         var tpl = self.tpl_ = self.get('tpl');
         switch (type) {
@@ -139,15 +147,23 @@ var Progressbars = Base.extend({
     show: function () {
         var self = this;
         var $progressbar = self.$progressbar;
+        if (self.animate_) {
+            $progressbar.fadeIn();
+        } else {
+            $progressbar.show();
+        }
         self.hidden_ = false;
-        $progressbar.show();
         self._accessible('hidden');
     },
     hide: function () {
         var self = this;
         var $progressbar = self.$progressbar;
+        if (self.animate_) {
+            $progressbar.fadeOut();
+        } else {
+            $progressbar.hide();
+        }
         self.hidden_ = true;
-        $progressbar.hide();
         self._accessible('hidden');
     },
     setter: function (prop, value) {
@@ -232,30 +248,30 @@ var Progressbars = Base.extend({
         if (Util.typeOf(value) !== 'Number') return;
         var self = this;
         var type = self.type_;
-        if (type === 'indeterminate' || type === 'loading') return;
         var $progressbar_volume = self.$progressbar_volume;
         var min = self.min_;
         var max = self.max_;
-        var volume;
         var percent;
         var tpl = self.tpl_;
         if (value < min) value = min;
         if (value > max) value = max;
         self.value_ = value;
-        volume = max - min;
-        percent = self.percent_ = parseInt(value / volume * 100);
+        percent = self.percent_ = parseInt((value - min) / (max - min) * 100);
         $progressbar_volume.html(S.substitute(tpl, {
             percent: percent,
             value: value,
             max: max
-        })).width(percent + '%');
+        }));
+        if (type === 'value' || type === 'percent') {
+            $progressbar_volume.width(percent + '%');
+        }
         self._accessible('value');
 
         //触发change事件
         self.fire('change');
 
-        if (value === max) {
-            //触发complete事件, type='indeterminate'或type='loading'时，不触发complete事件
+        if (percent === 100) {
+            //触发complete事件
             self.fire('complete');
         }
     }
@@ -284,27 +300,52 @@ var Progressbars = Base.extend({
             }
         },
         min: {
-            value: 0 //type='percent'时，min=0；type='indeterminate'或type='loading'时，忽略此值；
+            value: 0 //type='percent'时，min=0；
         },
         max: {
-            value: 100 //type='percent'时，max=100；type='indeterminate'或type='loading'时，忽略此值；
+            value: 100 //type='percent'时，max=100；
         },
         value: {
-            value: 0 //type='indeterminate'或type='loading'时，忽略此值；
+            value: 0
         },
         tpl: {
             value: '{value}/{max}' //type='percent'时，tpl='{percent}%'; type='indeterminate'或type='loading'时，tpl=''；
         },
         type: {
-            value: 'value' //value, percent, indeterminate, loading；
+            value: 'value' //type='value/percent/indeterminate/loading'；
         },
         animate: {
-            value: true //animate=true, 并且type='value'或type='percent'时，改变当前值，会显示动画效果；type='indeterminate'或type='loading'时，忽略此值；
+            value: true ///animate=true, 执行show()或hide()方法，会显示动画效果；animate=true, 且type='value'或type='percent'时，改变当前值，会显示动画效果；
         },
         disabled: {
             value: false
         }
     }
+});
+
+Progressbars.prototype.__defineSetter__('value', function (value) {
+    var self = this;
+    self._value(value);
+});
+Progressbars.prototype.__defineSetter__('tpl', function (value) {
+    var self = this;
+    self._tpl(value);
+});
+Progressbars.prototype.__defineSetter__('disabled', function (value) {
+    var self = this;
+    self._disabled(value);
+});
+Progressbars.prototype.__defineGetter__('value', function () {
+    var self = this;
+    return self.value_;
+});
+Progressbars.prototype.__defineGetter__('tpl', function () {
+    var self = this;
+    return self.tpl_;
+});
+Progressbars.prototype.__defineGetter__('disabled', function () {
+    var self = this;
+    return self.disabled_;
 });
 
 module.exports = Progressbars;
