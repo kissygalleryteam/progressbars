@@ -1,1 +1,0 @@
-KISSY.add("kg/progressbars/1.0.1/lib/main",["node","base"],function(e,n,a,i){var o=(n("node").all,n("base"));i.exports=o.extend({initializer:function(){}},{ATTRS:{}})});
